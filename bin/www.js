@@ -2,13 +2,13 @@
  * @Author: sitao
  * @Date: 2021-01-12 15:46:09
  * @LastEditors: sitao
- * @LastEditTime: 2021-01-13 11:32:47
+ * @LastEditTime: 2021-01-19 15:01:51
  */
 const app = require('../app');
 const debug = require('debug')('demo:server');
 const http = require('http');
 
-// 设置端口号7778
+// 设置端口号7777
 const port = normalizePort( process.env.PORT || "7777");
 const server = http.createServer(app.callback());
 

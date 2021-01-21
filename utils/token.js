@@ -3,10 +3,10 @@
  * @Date: 2021-01-15 10:18:39
  * @LastEditors: sitao
  * 
- * @LastEditTime: 2021-01-15 17:21:26
+ * @LastEditTime: 2021-01-21 16:32:15
  */
 const jwt = require('jsonwebtoken');
-const { TOKEN_ENCODE_STR, URL_YES_PASS } = require('./config');
+const { TOKEN_ENCODE_STR, URL_YES_PASS,secretOrKey } = require('./config');
 const Checkcode = require('../db').Checkcode;
 const User = require('../db').User
 
@@ -16,7 +16,7 @@ module.exports = {
     // 生成登录 token
     create_token(str) {
         //过期时间设置为60妙。那么decode这个token的时候得到的过期时间为 : 创建token的时间 +　设置的值
-        return token = jwt.sign({ str }, TOKEN_ENCODE_STR, { expiresIn: '60s' });
+        return token = jwt.sign({ str }, secretOrKey, { expiresIn: 60*60*24 });
     },
     // 验证 验证码 token 与 code 是否正确
     async check_token_code({ token, code }) {

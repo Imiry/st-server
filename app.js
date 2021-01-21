@@ -2,7 +2,7 @@
  * @Author: sitao
  * @Date: 2021-01-12 15:46:09
  * @LastEditors: sitao
- * @LastEditTime: 2021-01-15 14:56:09
+ * @LastEditTime: 2021-01-20 16:51:59
  */
 const Koa = require('koa')
 const app = new Koa()
@@ -10,6 +10,9 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
+const passport = require('koa-passport') //集成权限认证中间件之Passport
+const cors = require('koa-cors')
+const axios = require('axios')
 // error handler
 onerror(app);
 
@@ -20,6 +23,13 @@ app.use(bodyparser({
 app.use(json())
 app.use(logger())
 app.use(require('koa-static')(__dirname + '/public'))
+app.use(cors())
+
+//回调到util文件中，passport.js
+
+app.use(passport.initialize())
+app.use(passport.session())
+require('./utils/passport')(passport)
 
 // logger
 app.use(function *(next){
@@ -31,8 +41,23 @@ app.use(function *(next){
 
 
 // routes
-const index = require('./routes/index')
-app.use(index.routes(), index.allowedMethods())
+const user = require('./routes/user.js')
+const profile = require('./routes/profile.js')
+const menu = require('./routes/menu.js')
+app.use(user.routes(), user.allowedMethods())
+app.use(profile.routes(), profile.allowedMethods())
+app.use(menu.routes(), menu.allowedMethods())
+
+//测试用的
+// let form = {
+//   name:'stk',
+//   pass:'123456.',
+//   email:'stmt@163.com'
+// }
+// axios.post('http://localhost:7777/api/register',form).then((res) => {
+//   console.log(res.config)
+//   console.log(res.config.data)
+// })
 
 // error-handling
 app.on('error', (err, ctx) => {
