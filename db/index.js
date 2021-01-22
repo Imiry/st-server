@@ -2,7 +2,7 @@
  * @Author: sitao
  * @Date: 2021-01-12 17:58:52
  * @LastEditors: sitao
- * @LastEditTime: 2021-01-20 17:18:05
+ * @LastEditTime: 2021-01-22 13:53:56
  */
 const mongoose = require('mongoose');
 const db = mongoose.connect("mongodb://localhost:27017/admin", { useNewUrlParser: true }, function (err) {
@@ -51,7 +51,7 @@ let profileSchema = new Schema({
     required: true
   },
   skills: {
-    type: [String],
+    type: String,
     required: true
   },
   bio: String,
@@ -73,12 +73,8 @@ let profileSchema = new Schema({
       location: {
         type: String
       },
-      from: {
-        type: String,
-        required: true
-      },
-      to: {
-        type: String
+      date:{
+        type:String
       },
       description: {
         type: String
@@ -102,12 +98,8 @@ let profileSchema = new Schema({
       fieldofstudy: {
         type: String
       },
-      from: {
-        type: String,
-        required: true
-      },
-      to: {
-        type: String
+      date:{
+        type:String
       },
       description: {
         type: String

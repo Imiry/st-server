@@ -2,7 +2,7 @@
  * @Author: sitao
  * @Date: 2021-01-19 17:18:14
  * @LastEditors: sitao
- * @LastEditTime: 2021-01-20 15:27:17
+ * @LastEditTime: 2021-01-22 16:52:11
  */
 
 const Profile = require('../../db').Profile;  //引入对应的model操作
@@ -32,7 +32,7 @@ const addOreaditProfile = async (ctx) => {
   if (ctx.request.body.website) profileFieds.website = ctx.request.body.website
   if (ctx.request.body.location) profileFieds.location = ctx.request.body.location
   if (ctx.request.body.status) profileFieds.status = ctx.request.body.status
-  if (ctx.request.body.skills !== 'undefined') profileFieds.skills = ctx.request.body.skills.split(',')
+  if (ctx.request.body.skills !== 'undefined') profileFieds.skills = ctx.request.body.skills
   if (ctx.request.body.bio) profileFieds.bio = ctx.request.body.bio
   if (ctx.request.body.githubusername) profileFieds.githubusername = ctx.request.body.githubusername
 
@@ -106,8 +106,7 @@ const addExperience = async (ctx) => {
       title: ctx.request.body.title,
       company: ctx.request.body.company,
       location: ctx.request.body.location,
-      from: ctx.request.body.from,
-      to: ctx.request.body.to,
+      date: ctx.request.body.date,
       description: ctx.request.body.description,
     }
     profileFieds.experience.unshift(newExp);
@@ -120,8 +119,10 @@ const addExperience = async (ctx) => {
     if(profileFiedsUpdate.ok = 1) {
       const profile = await Profile.find({ user: ctx.state.user.id }).populate('User',['user_name','user_avtor'])
       if(profile) {
-        ctx.status = 200;
-        ctx.body = profile;
+        ctx.body = {
+          status:200,
+          profile
+        }
       }
     }
   } else {
@@ -136,27 +137,28 @@ const addEducation = async (ctx) => {
   profileFieds.education = []
   const profile = await Profile.find({ user: ctx.state.user.id })
   if (profile.length > 0) {
-    const newExp = {
+    const newEdu = {
       school: ctx.request.body.school,
       degree: ctx.request.body.degree,
       fieldofstudy: ctx.request.body.fieldofstudy,
-      from: ctx.request.body.from,
-      to: ctx.request.body.to,
+      date: ctx.request.body.date,
       description: ctx.request.body.description,
     }
-    profileFieds.education.unshift(newExp);
+    profileFieds.education.unshift(newEdu);
     // console.log(profileFieds.experience)
     const profileFiedsUpdate = await await Profile.updateOne(
       { user: ctx.state.user.id },
       { $push: {education:profileFieds.education} },
       { $sort: 1 }
     )
-    console.log(profileFiedsUpdate)
+    // console.log(profileFiedsUpdate)
     if(profileFiedsUpdate.ok = 1) {
       const profile = await Profile.find({ user: ctx.state.user.id }).populate('User',['user_name','user_avtor'])
       if(profile) {
-        ctx.status = 200;
-        ctx.body = profile;
+        ctx.body = {
+          status:200,
+          profile
+        }
       }
     }
   } else {
@@ -166,13 +168,13 @@ const addEducation = async (ctx) => {
 }
 
 
-//根据经验中的id 伤处对应的经验
+//根据经验中的id 删除对应的经验
 const deleteExperience = async (ctx) => {
   const exp_id = ctx.query.exp_id
   const profile = await Profile.find({user: ctx.state.user.id})
   if(profile[0].experience.length >0) {
     //找到下标
-    const removeIndex = profile[0].experience.map(item => item.id).indexof(exp_id)
+    const removeIndex = profile[0].experience.map(item => item.id).indexOf(exp_id)
 
     //删除
     profile[0].experience.splice(removeIndex,1)
@@ -192,11 +194,11 @@ const deleteExperience = async (ctx) => {
 
 //根据教育经历中的id 删除对应的教育
 const deleteEducation = async (ctx) => {
-  const Edu_id = ctx.query.Edu_id
+  const edu_id = ctx.query.edu_id
   const profile = await Profile.find({user: ctx.state.user.id})
   if(profile[0].education.length >0) {
     //找到下标
-    const removeIndex = profile[0].education.map(item => item.id).indexOf(Edu_id)
+    const removeIndex = profile[0].education.map(item => item.id).indexOf(edu_id)
 
     //删除
     profile[0].education.splice(removeIndex,1)
@@ -214,7 +216,62 @@ const deleteEducation = async (ctx) => {
   }
 }
 
+//根据工作经验的id编辑对应的经验
+const eaditExperience = async (ctx) => {
+  const exp_id = ctx.query.exp_id
+  const profile = await Profile.find({user: ctx.state.user.id})
+  if(profile[0].experience.length >0) {
+    //找到对应编辑的下标
+    const eaditIndex = profile[0].experience.map(item => item.id).indexOf(exp_id)
+    const newExp = {
+      title: ctx.request.body.title,
+      company: ctx.request.body.company,
+      location: ctx.request.body.location,
+      date: ctx.request.body.date,
+      description: ctx.request.body.description,
+    }
+    profile[0].experience[eaditIndex] = newExp;
 
+    //更新数据
+    const profileUpdate = await Profile.findOneAndUpdate(
+      { user: ctx.state.user.id },
+      { $set: profile[0] },
+      { new:true }
+    )
+    ctx.body = profileUpdate; 
+  }else{
+    ctx.status = 404;
+    ctx.body = '没查到用户信息'
+  }
+}
+//根据教育经历
+const eaditEducation = async (ctx) =>{
+  const edu_id = ctx.query.edu_id
+  const profile = await Profile.find({user: ctx.state.user.id})
+  if(profile[0].education.length >0) {
+    //找到对应编辑的下标
+    const eaditIndex = profile[0].education.map(item => item.id).indexOf(edu_id)
+    const newEdu = {
+      school: ctx.request.body.school,
+      degree: ctx.request.body.degree,
+      fieldofstudy: ctx.request.body.fieldofstudy,
+      date: ctx.request.body.date,
+      description: ctx.request.body.description,
+    }
+    profile[0].education[eaditIndex] = newEdu;
+
+    //更新数据
+    const profileUpdate = await Profile.findOneAndUpdate(
+      { user: ctx.state.user.id },
+      { $set: profile[0] },
+      { new:true }
+    )
+    ctx.body = profileUpdate; 
+  }else{
+    ctx.status = 404;
+    ctx.body = '没查到用户信息'
+  }
+}
 //删除整个用户信息，删除之后就需要重新注册
 const deleteAll = async (ctx) => {
 
@@ -241,5 +298,7 @@ module.exports = {
   addEducation,
   deleteExperience,
   deleteEducation,
+  eaditExperience,
+  eaditEducation,
   deleteAll
 }

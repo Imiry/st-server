@@ -2,7 +2,7 @@
  * @Author: sitao
  * @Date: 2021-01-19 17:33:04
  * @LastEditors: sitao
- * @LastEditTime: 2021-01-20 15:18:07
+ * @LastEditTime: 2021-01-22 15:42:17
  */
 var router = require('koa-router')();
 const controllerProfile = require('../controller/profile')
@@ -18,8 +18,9 @@ router.get('/news',async (ctx)=>{
 .get('/api/profile/user',  controllerProfile.getProfileById) //通过user中的id来查询对应的用户信息
 .get('/api/profile/all',   controllerProfile.getAllProfile) //查询所有的用户信息
 .post('/api/profile/experience', passport.authenticate('jwt', { session: false }) , controllerProfile.addExperience) //添加经验，私有的接口
-.delete('/api/profile/experience', passport.authenticate('jwt', { session: false }) , controllerProfile.deleteExperience) //根据经验id伤处对应用户的经验
+.delete('/api/profile/experience', passport.authenticate('jwt', { session: false }) , controllerProfile.deleteExperience) //根据经验id删除对应用户的经验
+.put('/api/profile/experience', passport.authenticate('jwt', { session: false }) , controllerProfile.eaditExperience) //根据经验id编辑对应用户的经验
 .post('/api/profile/education', passport.authenticate('jwt', { session: false }) , controllerProfile.addEducation) //添加教育经历，私有的接口
-.delete('/api/profile/education', passport.authenticate('jwt', { session: false }) , controllerProfile.deleteEducation) //根据教育经历id伤处对应用户的经历
-
+.delete('/api/profile/education', passport.authenticate('jwt', { session: false }) , controllerProfile.deleteEducation) //根据教育经历id删除对应用户的经历
+.put('/api/profile/education', passport.authenticate('jwt', { session: false }) , controllerProfile.eaditEducation) //根据教育id编辑对应用户的教育
 module.exports = router;
