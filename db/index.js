@@ -2,7 +2,7 @@
  * @Author: sitao
  * @Date: 2021-01-12 17:58:52
  * @LastEditors: sitao
- * @LastEditTime: 2021-01-22 13:53:56
+ * @LastEditTime: 2021-01-27 11:38:22
  */
 const mongoose = require('mongoose');
 const db = mongoose.connect("mongodb://localhost:27017/admin", { useNewUrlParser: true }, function (err) {
@@ -176,6 +176,32 @@ let menuSchema = new Schema({
   
 })
 
+
+let articleSchema = new Schema({
+  user: {     //关联数据表
+    type: String,
+    ref: 'User',
+    required: true
+  },
+  article: [
+    {
+      title:String,//文章标题
+      content:String,//文章内容
+      likes:Number,//点赞次数
+      class:String,//文章类型
+      time:String,//发表时间
+      coverImg:String,//封面图片
+      isPublish:Boolean//是否发布
+    }
+  ]
+  
+});
+
+
+let mapSchema = new Schema({
+  namemap:Object,
+  dataArr:Array
+})
 //根据schema生成model
 exports.User = mongoose.model('User', userSchema, 'user');
 
@@ -184,3 +210,6 @@ exports.Checkcode = mongoose.model('Checkcode', checkcodeSchema, 'Checkcode');
 exports.Profile = mongoose.model('Profile', profileSchema, 'profile'); 
 
 exports.Menu = mongoose.model('Menu', menuSchema); 
+
+exports.Article = mongoose.model('Article', articleSchema); 
+exports.Map = mongoose.model('Map', mapSchema); 

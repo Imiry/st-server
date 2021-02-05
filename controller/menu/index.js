@@ -2,10 +2,10 @@
  * @Author: sitao
  * @Date: 2021-01-20 16:49:14
  * @LastEditors: sitao
- * @LastEditTime: 2021-01-21 10:45:09
+ * @LastEditTime: 2021-01-26 13:44:22
  */
 const Menu = require('../../db').Menu;  //引入对应的model操作
-const User = require('../../db').User; 
+
 
 
 /**

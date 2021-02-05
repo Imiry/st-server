@@ -2,7 +2,7 @@
  * @Author: sitao
  * @Date: 2021-01-12 15:46:09
  * @LastEditors: sitao
- * @LastEditTime: 2021-01-20 16:51:59
+ * @LastEditTime: 2021-01-26 13:49:19
  */
 const Koa = require('koa')
 const app = new Koa()
@@ -44,9 +44,11 @@ app.use(function *(next){
 const user = require('./routes/user.js')
 const profile = require('./routes/profile.js')
 const menu = require('./routes/menu.js')
+const article = require('./routes/article.js')
 app.use(user.routes(), user.allowedMethods())
 app.use(profile.routes(), profile.allowedMethods())
 app.use(menu.routes(), menu.allowedMethods())
+app.use(article.routes(), article.allowedMethods())
 
 //测试用的
 // let form = {

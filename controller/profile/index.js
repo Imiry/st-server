@@ -2,7 +2,7 @@
  * @Author: sitao
  * @Date: 2021-01-19 17:18:14
  * @LastEditors: sitao
- * @LastEditTime: 2021-01-22 16:52:11
+ * @LastEditTime: 2021-01-26 14:30:35
  */
 
 const Profile = require('../../db').Profile;  //引入对应的model操作
@@ -51,7 +51,10 @@ const addOreaditProfile = async (ctx) => {
       { $set: profileFieds },
       { new: true }
     )
-    ctx.body = profileUpdate
+    ctx.body = {
+      status:200,
+      data:profileUpdate
+    }; 
   } else {
     await new Profile(profileFieds).save().then(profile => {
       ctx.status = 200;
@@ -146,7 +149,7 @@ const addEducation = async (ctx) => {
     }
     profileFieds.education.unshift(newEdu);
     // console.log(profileFieds.experience)
-    const profileFiedsUpdate = await await Profile.updateOne(
+    const profileFiedsUpdate =  await Profile.updateOne(
       { user: ctx.state.user.id },
       { $push: {education:profileFieds.education} },
       { $sort: 1 }
@@ -185,7 +188,10 @@ const deleteExperience = async (ctx) => {
       { $set: profile[0] },
       { new:true }
     )
-    ctx.body = profileUpdate; 
+    ctx.body = {
+      status:200,
+      data:profileUpdate
+    }; 
   }else{
     ctx.status = 404;
     ctx.body = '没查到用户信息'
@@ -209,7 +215,10 @@ const deleteEducation = async (ctx) => {
       { $set: profile[0] },
       { new:true }
     )
-    ctx.body = profileUpdate; 
+    ctx.body = {
+      status:200,
+      data:profileUpdate
+    }; 
   }else{
     ctx.status = 404;
     ctx.body = '没查到用户信息'
@@ -244,7 +253,7 @@ const eaditExperience = async (ctx) => {
     ctx.body = '没查到用户信息'
   }
 }
-//根据教育经历
+//根据教育经历的id编辑对应的经历
 const eaditEducation = async (ctx) =>{
   const edu_id = ctx.query.edu_id
   const profile = await Profile.find({user: ctx.state.user.id})
@@ -266,7 +275,10 @@ const eaditEducation = async (ctx) =>{
       { $set: profile[0] },
       { new:true }
     )
-    ctx.body = profileUpdate; 
+    ctx.body = {
+      status:200,
+      data:profileUpdate
+    }; 
   }else{
     ctx.status = 404;
     ctx.body = '没查到用户信息'
